@@ -1,5 +1,9 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, menu} = require('electron')
+const path = require('path');
+const Store = require('./assets/js/store.js');
+// const path = require('path');
+// const Store = require('./assets/js/store.js');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -7,13 +11,24 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({width: 280, height: 280, resizable: false, frame: false})
+
+  // mainWindow = new BrowserWindow({width: 1000, height: 780, resizable: true, frame: true})
+  // mainWindow.webContents.openDevTools()
+
+  // width 280
+
+  store.set();
+
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
 
+  console.log('loaded');
+  
+
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -23,6 +38,17 @@ function createWindow () {
     mainWindow = null
   })
 }
+
+const store = new Store({
+  // We'll call our data file 'user-preferences'
+  configName: 'user-preferences',
+  defaults: {
+    // 800x600 is the default size of our window
+    hideTimeDateText: { field: false },
+    spiralTime: { field: 'day' },
+    palette: { field: '' },
+  }
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -48,3 +74,6 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+
+

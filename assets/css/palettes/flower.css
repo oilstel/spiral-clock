@@ -1,0 +1,16 @@
+html, body {
+    background-color: #315E47;
+    color: #FBDBEB;
+}
+
+.spiral_color, a {
+    color: #FBDBEB;
+}
+
+#title_bar button, #settings_btn {
+    border: 1px dotted #FBDBEB;
+}
+
+#title_bar button:hover, #settings_btn:hover {
+    background-color: #FBDBEB;
+}

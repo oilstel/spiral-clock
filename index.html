@@ -2,18 +2,87 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Spiral</title>
+    <link href="./assets/css/app.css" rel="stylesheet">
+    <link id="palette" rel="stylesheet" href="">
   </head>
-  <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+
+  
+  <!-- Insert this line above script imports  -->
+  <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+  <!-- normal script imports etc  -->
+  <script src="./assets/js/jquery.js"></script>    
+
+  <!-- Insert this line after script imports -->
+  <script>if (window.module) module = window.module;</script>
+  <body style="-webkit-app-region: drag">
+
+    <!-- <div id="spiral" class="home"></div> -->
+
+    <div id="title_bar" style="display:none;">
+        <div id="left">
+            <button id="close_btn"></button>
+            <button id="min_btn"></button>
+        </div>
+        <a href="settings.html" id="settings_btn"></a>
+   </div>
+
+
+
+    <div id="quote_wrap">
+      <div id="quote" style="display:none;">
+          <p id="quote_text"></p>
+  
+          <span id="quote_caption"></span>
+      </div>
+    </div>
+
+
+<div id="main_view">
+      <div id="time"></div>
+  
+      <div id="container">
+        
+        <canvas id="spiral" style="display:none;"></canvas>
+      
+      </div>
+  
+      <div id="date"></div>
+</div>
+
+
+<script>
+    (function () {
+        // Retrieve remote BrowserWindow
+        const {BrowserWindow} = require('electron').remote
+
+        function init() {
+            // Minimize task
+            document.getElementById("min_btn").addEventListener("click", (e) => {
+                var window = BrowserWindow.getFocusedWindow();
+                window.minimize();
+            });
+
+            // Close app
+            document.getElementById("close_btn").addEventListener("click", (e) => {
+                var window = BrowserWindow.getFocusedWindow();
+                window.close();
+            });
+        };
+
+        document.onreadystatechange =  () => {
+            if (document.readyState == "complete") {
+                init();
+            }
+        };
+    })();
+    </script>
 
     <script>
       // You can also require other files to run in this process
       require('./renderer.js')
+      require('./assets/js/clock.js')
     </script>
   </body>
 </html>

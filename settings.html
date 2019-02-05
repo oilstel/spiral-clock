@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Spiral</title>
+    <link href="./assets/css/app.css" rel="stylesheet">
+    <link href="./assets/css/settings.css" rel="stylesheet">
+  </head>
+
+
+  
+  <body>
+
+    <!-- <div id="spiral" class="home"></div> -->
+
+    <div id="title_bar">
+        <div id="left">
+            <button id="close_btn"></button>
+            <button id="min_btn"></button>
+        </div>
+        <!-- <a href="index.html" id="settings_btn">Back</a> -->
+   </div>
+
+
+    <div id="settings">
+      <div>
+        <p>
+            <label for="time_select_label">Grow spiral over:</label>
+      
+            <select id="time_select" >
+                <option value="day">Day</option>
+                <!-- <option value="3_days">3 Days</option>
+                <option value="week">Week</option>
+                <option value="month">Month</option> -->
+                <option value="year">Year</option>
+            </select>
+        </p>
+  
+        <p>
+          <label for="palette_select_label">Palette:</label>
+    
+          <select id="palette_select">
+              <option value="">Snow</option>
+              <option value="moon">Moon</option>
+              <option value="flower">Flower</option>
+              <option value="ginko_fossil">Ginko Fossil</option>
+              <option value="ocean">Ocean</option>
+              <option value="bird">Bird</option>
+          </select>
+        </p>
+
+        <p>
+            <input type="checkbox" name="hide_time_date_text" id="hide_time_date_text"> <label>Hide time and date</label>
+        </p>
+
+        <a href="index.html" id="done-btn">Done</a>
+
+        
+    </div>
+
+
+    </div>
+
+
+
+<script>
+    (function () {
+        // Retrieve remote BrowserWindow
+        const {BrowserWindow} = require('electron').remote
+
+        function init() {
+            // Minimize task
+            document.getElementById("min_btn").addEventListener("click", (e) => {
+                var window = BrowserWindow.getFocusedWindow();
+                window.minimize();
+            });
+
+            // Close app
+            document.getElementById("close_btn").addEventListener("click", (e) => {
+                var window = BrowserWindow.getFocusedWindow();
+                window.close();
+            });
+        };
+
+        document.onreadystatechange =  () => {
+            if (document.readyState == "complete") {
+                init();
+            }
+        };
+    })();
+    </script>
+
+    <script>
+      // You can also require other files to run in this process
+      require('./renderer.js')
+      require('./assets/js/settings.js')
+    </script>
+  </body>
+</html>

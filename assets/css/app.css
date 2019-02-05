@@ -1,0 +1,120 @@
+    html, body {
+      background-color: rgb(255, 255, 255);
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: none;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      /* color: #494949; */
+      color: #ABABAB;
+      -webkit-user-select: none;
+      overflow: hidden;
+    }
+    *, *:before, *:after {
+      box-sizing: border-box;
+    }
+    canvas {
+      /* border: 1px solid black; */
+      margin-top: 0px;
+      width: 278px;
+      height: 278px;
+    }
+    a {
+      color: #ABABAB;
+    }
+    #container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+    }
+    #time, #date {
+      text-align: center;
+      width: 100%;
+      text-align: center;
+      padding: 20px;
+      /* display: none; */
+    }
+    #time {
+      position: absolute;
+      top: 0;
+    }
+    #date {
+      position: absolute;
+      bottom: 0;
+    }
+    #quote_wrap {
+      width: 100%;
+      height: 278px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #quote {
+      width: 100%;
+      text-align: center;
+      padding: 0 20px 0 20px;
+      margin-top: -50px;
+      font-size: 16px;
+    }
+    #quote #quote_caption {
+      font-size: 12px;
+    }
+    #quote #quote_text {
+      overflow: hidden;
+      line-height: 20px;
+      padding: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-height: 140px;
+    }
+
+    #title_bar {
+      display: block;
+      z-index: 2000;
+      display: block;
+    }
+
+    #title_bar #left {
+      padding-left: 7px;
+      padding-top: 1px;
+    }
+
+    #title_bar button {
+      border-radius: 100%;
+      padding: 6px;
+      border: 1px dotted #ABABAB;
+      outline: none;
+      background-color: transparent;
+      cursor: pointer;
+    }
+
+    #title_bar button:hover, #settings_btn:hover {
+      background-color: #ABABAB;
+    }
+
+    .hide_time_date_text {
+      display: none !important;
+    }
+
+    #settings_btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      padding: 8px;
+      font-size: 12px;
+      text-decoration: none;
+      padding: 6px;
+      border: 1px dotted #ABABAB;
+      outline: none;
+      display: block;
+      z-index: 100;
+    }
+
+    #settings {
+      /* background-color: red; */
+      margin-top: -25px;
+    }

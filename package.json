@@ -1,22 +1,36 @@
 {
-  "name": "electron-quick-start",
+  "name": "Spiral",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "",
   "main": "main.js",
   "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "git@github.com:oilstel/spiral-clock.git",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "The Creative Independent",
+    "TCI",
+    "spiral",
+    "snail"
   ],
-  "author": "GitHub",
+  "author": "The Creative Independent",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^4.0.3"
+    "electron": "^4.0.3",
+    "electron-builder": "^20.38.5"
+  },
+  "dependencies": {
+    "jquery": "^3.3.1"
+  },
+  "build": {
+    "appId": "your.id",
+    "mac": {
+      "category": "your.app.category.type"
+    },
+    "directories": {
+      "buildResources": "./assets/icons"
+    }
   }
 }
