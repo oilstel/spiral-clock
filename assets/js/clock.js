@@ -1,107 +1,118 @@
 const path = require('path');
 const Store = require('./store.js');
+const canvasInit = require('./canvas.js');
 
+// Get settings
+const store = new Store({
+  // Data file is called 'user-preferences' and is stored in Libray/Application Support
+  configName: 'user-preferences'
+});
 
-function newDate() {
-    date = new Date;
-    day = date.getDate();
-    month = date.getMonth()+1;
-    year = date.getFullYear();
-    seconds = date.getSeconds();
-    minutes = date.getMinutes();
-    hours = date.getHours();
+// Set settings init
+hideTimeDateText = store.get('hideTimeDateText').field;
+spiralTime = store.get('spiralTime').field;
+palette = store.get('palette').field;
 
-    // Get current day out of year (365)
-    start = new Date(date.getFullYear(), 0, 0);
-    diff = (date - start) + ((start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000);
-    oneDay = 1000 * 60 * 60 * 24;
-    dayInYear = Math.floor(diff / oneDay);
-    // console.log('Day of year: ' + dayInYear);
-  
-    hands = [
-      {
-        hand: 'day',
-        position: Math.floor(((hours * 49) + minutes) / 6)
-      },
-      {
-        hand: 'year',
-        position: dayInYear / 2
-      }
-    ];
-  }
-  
-  
+// Change CSS palette to what is specifed in the settings panel
+var palettesPath = './assets/css/palettes/';
+$("head link#palette").attr("href", palettesPath + palette + '.css');
 
-  // Set up spiral canvas and resize for screen dpi
-  function canvas_obj(ele) {
-    let returnable = {
-      canvas: ele,
-      ctx: ele.getContext("2d"),
-      dpi: window.devicePixelRatio
-    };
-    returnable.get = {
-      style: {
-        height() {
-          return +getComputedStyle(ele).getPropertyValue("height").slice(0, -2);
-        },
-        width() {
-          return +getComputedStyle(ele).getPropertyValue("width").slice(0, -2);
-        }
-      },
-      attr: {
-        height() {
-          return returnable.ele.getAttribute("height");
-        },
-        width() {
-          return returnable.ele.getAttribute("height");
-        }
-      }
-    };
-    returnable.set = {
-      style: {
-        height(ht) {
-          ele.style.height = ht + "px";
-        },
-        width(wth) {
-          ele.style.width = wth + "px";
-        }
-      },
-      attr: {
-        height(ht) {
-          ele.setAttribute("height", ht);
-        },
-        width(wth) {
-          ele.setAttribute("width", wth);
-        }
-      }
-    };
-    return returnable;
-  }
+// Init quote onload
+loadQuote();
 
-  let canvas = canvas_obj(document.getElementById("spiral"));
-  let { ctx, dpi, set, get } = canvas;
+// Update time on load
+textClock();
 
-  function dpi_adjust() {
+// Update time every second
+setInterval(textClock, 1000);
+
+// Set time increment (day or year) every second
+setInterval(function() {setTimeIncrement(currentPosition)}, 1000);
+
+// Set Sprial Time Increment
+if (spiralTime === 'day') {
+  console.log('DAY',TimeIncrements[0].position);
+  var currentPosition = 0;
+} else if (spiralTime === 'year') {
+  console.log('YEAR', TimeIncrements[1].position);
+  var currentPosition = 1;
+}
+
+// Show hide date and time text
+if (hideTimeDateText == true) {
+  $("#time, #date").addClass("hide_time_date_text");
+} else {
+  $("#time, #date").removeClass("hide_time_date_text");
+}
+
+// App transitions
+var isOnDiv = false;
+
+// On hover load new quote and fade in
+$('body').mouseenter(function(){
+  isOnDiv=true;
+  loadQuote()
+  $("#main_view").stop().fadeOut('slow');
+  $("#quote, #title_bar").stop().fadeIn('slow');
+});
+
+// On mouseleave fade out quote
+$('body').mouseleave(function(){
+  isOnDiv=false;
+  $("#main_view").stop().fadeIn();
+  $("#quote, #title_bar").stop().fadeOut();
+});
+
+// Fade in spiral
+$('#spiral').delay(800).fadeIn('slow');
+
+// Set up Spiral Canvas DPI (included from './canvas.js')
+let canvas = canvasInit.canvas_obj(document.getElementById("spiral"));
+let { ctx, dpi, set, get } = canvas;
+
+function dpi_adjust() {
     set.attr.height(get.style.height() * dpi);
     set.attr.width(get.style.width() * dpi);
-  }
-  
-  console.log('H:', get.style.height());
-  console.log('W:', get.style.width());
-  
-  var c = document.getElementById('spiral');
-  var context = c.getContext("2d");
-  var centerx = get.style.width();
-  var centery = get.style.height();
+}
+
+var c = document.getElementById('spiral');
+var context = c.getContext("2d");
+var centerx = get.style.width();
+var centery = get.style.height();
 
 
+// FUNCTIONS //
 
-  
+// Get date
+function newDate() {
+  date = new Date;
+  day = date.getDate();
+  month = date.getMonth()+1;
+  year = date.getFullYear();
+  seconds = date.getSeconds();
+  minutes = date.getMinutes();
+  hours = date.getHours();
 
-  
+  // Get current day out of year (365)
+  start = new Date(date.getFullYear(), 0, 0);
+  diff = (date - start) + ((start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000);
+  oneDay = 1000 * 60 * 60 * 24;
+  dayInYear = Math.floor(diff / oneDay);
+  // console.log('Day of year: ' + dayInYear);
 
+  TimeIncrements = [
+    {
+      type: 'day',
+      position: Math.floor(((hours * 49) + minutes) / 6)
+    },
+    {
+      type: 'year',
+      position: dayInYear / 2
+    }
+  ];
+}
 
-// Get color of spiral from palettes
+// Get color of spiral from CSS palette
 function colorFromCSSClass(className) {
   var tmp = document.createElement("div"), color;
   tmp.style.cssText = "position:fixed;left:-100px;top:-100px;width:1px;height:1px";
@@ -111,132 +122,54 @@ function colorFromCSSClass(className) {
   document.body.removeChild(tmp);
   return color
 }
-  
-var i = 0;
 
+// Animate Spiral
+var i = 0;
 function animate(position) {
   dpi_adjust(); 
     
   a = 4;
   b = 10;
 
-
-  // context.clearRect(0, 0, 200, 200);
-
-
   // Draw Spiral
   context.moveTo(centerx, centery);
   context.beginPath();
   for (i = -5; i < position; i++) {
-      angle = 0.1 * i;
-      x = centerx + (a + b * angle) * Math.cos(angle);
-      y = centery + (a + b * angle) * Math.sin(angle);
+    angle = 0.1 * i;
+    x = centerx + (a + b * angle) * Math.cos(angle);
+    y = centery + (a + b * angle) * Math.sin(angle);
 
-      context.lineTo(x, y);
+    context.lineTo(x, y);
   }
   context.strokeStyle = colorFromCSSClass("spiral_color");
   context.lineWidth = 1;
   context.stroke();
 }
 
-
-  // Fade in spiral
-
-  $('#spiral').delay(800).fadeIn('slow');
-
-
-
-
-
-// Text time and date
-
-updateTime()
-
-function updateTime() {
-
+// Update text clock
+function textClock() {
   newDate();
 
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
-];
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   const d = new Date();
 
   month = monthNames[d.getMonth()]
-
   var date = document.getElementById('date');
   var time = document.getElementById('time');
 
-  date.innerHTML = `${month} ${day}, ${year}`;
-
+  // AM PM Time
   ampmtime = new Date().toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")
 
+  // Append time
+  date.innerHTML = `${month} ${day}, ${year}`;
   time.innerHTML = ampmtime;
 
   console.log(new Date().toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3"))
-
-}
-setInterval(updateTime, 1000);
-
-
-
-
-
-loadQuote();
-
-
-// $(document).ready(function () {
-//   //your code here
-//   $( "body" ).click(function() {
-//     $( "#spiral" ).fadeOut( "slow", function() {
-//       // Animation complete.
-//     });
-//   });
-// });
-
-
-
-function getData() {
-  
-  var spiralDiv = document.getElementById("spiral"); 
-  var quoteDiv = document.getElementById("quote");
-  var timeDiv = document.getElementById("time");
-  var dateDiv = document.getElementById("date");
-
-  // $("#main_view").fadeToggle('slow').delay(800);
-  // $("#quote").fadeToggle('slow').delay(800);
-
-  // $("#main_view").hover(function(){
-  //   loadQuote()
-  // });
-
-
-  // spiralDiv.style.display = (spiralDiv.style.display == "none" ? "block" : "none"); 
-  // quoteDiv.style.display = (quoteDiv.style.display == "none" ? "block" : "none"); 
-
-  // timeDiv.style.display = (timeDiv.style.display == "none" ? "block" : "none");
-  // dateDiv.style.display = (dateDiv.style.display == "none" ? "block" : "none"); 
 }
 
-
-// document.querySelector('body').addEventListener('click', () => {
-//   getData();
-//   console.log('hit');
-// });
-
-// $("body").hover(
-//   function() {
-//     loadQuote()
-//     getData()
-//   }, function() {
-//     getData()
-//   }
-// );
-
-
-
-
+// Get quotes from json
 function loadQuote() {
-
   var randomizedNumber = function (length) {
     return Math.floor(Math.random() * length);
   }
@@ -247,21 +180,15 @@ function loadQuote() {
                 .replace(/\u201D/g, '&rsquo;')
                 .replace(/\u201C/g, '&lsquo;');
     },
-
     random: function (data) {
       return data[randomizedNumber(data.length)];
     },
-
     injector: function (data) {
       var quote = this.random(data);
       var text = this.htmlEncode(quote.text);
 
-      console.log(quote.post.title);
-
       document.getElementById('quote_text').innerHTML = '&ldquo;'.concat(text, '&rdquo;');
       document.getElementById('quote_caption').innerHTML = quote.quotee;
-      // document.getElementsByClassName('quote__article-url')[0].href = quote.post.url;
-      // document.getElementsByClassName('quote__article-url')[0].innerHTML = quote.post.url;
     }
   }
 
@@ -279,87 +206,13 @@ function loadQuote() {
   });
 }
 
-
-
-// Set settings
-
-const store = new Store({
-  // We'll call our data file 'user-preferences'
-  configName: 'user-preferences'
-});
-
-hideTimeDateText = store.get('hideTimeDateText').field;
-spiralTime = store.get('spiralTime').field;
-palette = store.get('palette').field;
-
-console.log('this:',hideTimeDateText);
-
-if (hideTimeDateText == true) {
-  console.log('yeahhhh')
-  $("#time, #date").addClass("hide_time_date_text");
-  
-} else {
-  $("#time, #date").removeClass("hide_time_date_text");
-
-}
-
-var isOnDiv = false;
-
-$('body').mouseenter(function(){
-  isOnDiv=true;
-  console.log('over');
-    loadQuote()
-    $("#main_view").stop().fadeOut('slow');
-    $("#quote, #title_bar").stop().fadeIn('slow');
-});
-
-$('body').mouseleave(function(){
-  isOnDiv=false;
-  console.log('nope');
-  $("#main_view").stop().fadeIn();
-  $("#quote, #title_bar").stop().fadeOut();
-});
-
-var palettesPath = './assets/css/palettes/';
-
-$("head link#palette").attr("href", palettesPath + palette + '.css');
-
-
-
-// Set Sprial Time
-
-if (spiralTime === 'day') {
-  console.log('DAY',hands[0].position);
-  var currentPosition = 0;
-} else if (spiralTime === '3_days') {
-  console.log(spiralTime);
-} else if (spiralTime === 'week') {
-  console.log(spiralTime);
-} else if (spiralTime === 'month') {
-  console.log(spiralTime);
-} else if (spiralTime === 'year') {
-  console.log('YEAR', hands[1].position);
-  var currentPosition = 1;
-}
-
-console.log(currentPosition);
-
-// newDate();
-// animate(currentPosition);
-  
-setInterval(function() {waiting(currentPosition)}, 1000);
-
-function waiting(currentPosition) {
-
+// Set time increment to either day or year
+function setTimeIncrement(currentPosition) {
   newDate();
-
-  var time = hands[currentPosition].position
-
-  console.log('Current:',hands[currentPosition].position);
-
+  var time = TimeIncrements[currentPosition].position
   animate(time);
-    
 }
+
 
 
 

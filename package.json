@@ -1,12 +1,13 @@
 {
   "name": "Spiral",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "",
   "main": "main.js",
   "scripts": {
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "start": "electron ."
+    "start": "electron .",
+    "publish": "build -p always"
   },
   "repository": "git@github.com:oilstel/spiral-clock.git",
   "keywords": [
@@ -22,15 +23,28 @@
     "electron-builder": "^20.38.5"
   },
   "dependencies": {
+    "electron-log": "^3.0.1",
+    "electron-updater": "^4.0.6",
     "jquery": "^3.3.1"
   },
   "build": {
-    "appId": "your.id",
+    "appId": "com.github.oilstel.spiral-clock",
     "mac": {
-      "category": "your.app.category.type"
+      "category": "your.app.category.type",
+      "target": [
+        "zip",
+        "dmg"
+      ]
     },
     "directories": {
       "buildResources": "./assets/icons"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "oilstel",
+        "repo": "spiral-clock"
+      }
+    ]
   }
 }
